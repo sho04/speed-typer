@@ -78,7 +78,7 @@ const TypeBox = () => {
 
                     if (char === " " && typedText[index] != " ") {
                         return (
-                            <span key={index} className="char-incorrect-space">
+                            <span key={index} className="char-incorrect">
                                 {typedText[index]}
                             </span>
                         )
