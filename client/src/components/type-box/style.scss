@@ -1,18 +1,32 @@
-
+@use "../../base.scss";
 
 .type-box {
-    background-color : grey;
+    width : 300px;
+    height : 300px;
+    background-color : white;
 }
 
 .char {
-    color: white;
+    font-family : base.$font-stack;
+    font-size : 15px;
+    color: grey;
 }
 
 .char-correct {
-    color : green;
+    font-family : base.$font-stack;
+    font-size : 15px;
+    color : black;
 }
 
 .char-incorrect {
+    font-family : base.$font-stack;
+    font-size : 15px;
     color : red;
+}
+
+.char-incorrect-space {
+    font-family : base.$font-stack;
+    font-size : 15px;
+    background-color : red;
 }
 

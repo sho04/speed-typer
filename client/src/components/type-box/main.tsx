@@ -49,14 +49,7 @@ const TypeBox = () => {
                     } else {
                         setTypedText(typedText + key);
                     }
-                    
-                    if (key === targetText[currentCharIndex]) {
-                        console.log("correct");
-                    } else {
-                        if (key === " ") {
-                            setCurrentCharIndex(currentCharIndex - 1);
-                        }
-                    }
+
                     setCurrentCharIndex(currentCharIndex + 1);
                     
                 }
@@ -83,11 +76,10 @@ const TypeBox = () => {
                         )
                     }
 
-                    if (char === " " && typedText[currentCharIndex] != " ") {
+                    if (char === " " && typedText[index] != " ") {
                         return (
-                            <span key={index} className="char-incorrect">
+                            <span key={index} className="char-incorrect-space">
                                 {typedText[index]}
-                                {char}
                             </span>
                         )
                     }
