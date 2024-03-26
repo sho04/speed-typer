@@ -13,6 +13,7 @@ const TypeBox = () => {
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
     const [typedWords, setTypedWords] = useState([""]);
+    const [complete, setComplete] = useState(false);
 
     // Refs
     const caretRef = useRef<HTMLDivElement>(null);
@@ -116,8 +117,7 @@ const TypeBox = () => {
                     break;
                 }
 
-                // If we're complete with the entire text don't do anything.
-                if (typedWords.length == targetText.length && currentCharIndex == typedWords[currentWordIndex].length) {
+                if (complete) {
                     break;
                 }
 
@@ -130,6 +130,10 @@ const TypeBox = () => {
 
                 break;
             default:
+
+                if (complete) {
+                    break;
+                }
 
                 // Add the letter to the current word.
                 newTypedWords = typedWords.map((word, index) => {
@@ -178,6 +182,12 @@ const TypeBox = () => {
 
     // USE EFFECTS
     useEffect(() => {}, []);
+
+    useEffect(() => {
+        if (currentCharIndex == targetWords[currentWordIndex].length && currentWordIndex == targetWords.length - 1) {
+            setComplete(true);
+        }
+    }, [currentCharIndex, currentWordIndex]);
 
     useEffect(() => {
         moveCaret();
