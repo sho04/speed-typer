@@ -134,7 +134,7 @@ const TypeBox = () => {
 
         let currentCharRect = typeboxChar.getBoundingClientRect();
         //console.log(currentCharRect.right);
-        caret.style.left = currentCharRect.right + "px";
+        caret.style.left = currentCharRect.left + "px";
         caret.style.top = currentCharRect.top + "px";
         caret.style.height = currentCharRect.height + "px";
         //caret.style.left = "100px";
