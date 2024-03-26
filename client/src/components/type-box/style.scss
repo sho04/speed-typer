@@ -13,6 +13,10 @@ $font-size : 28px;
     border : 1px white solid;
 }
 
+input {
+    opacity: 0;
+}
+
 .space {
     font-size : $font-size;
     font-family : base.$font-stack;

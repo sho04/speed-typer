@@ -88,6 +88,26 @@ const TypeBox = () => {
                 break;
             case "Enter":
                 break;
+            case "Control": // this is fucking disugsting but its optimal
+                break;
+            case "Alt":
+                break;
+            case "Delete":
+                break;
+            case "Tab":
+                break;
+            case "CapsLock":
+                break;
+            case "Escape":
+                break;
+            case "ArrowLeft":
+                break;
+            case "ArrowRight":
+                break;
+            case "ArrowUp":
+                break;
+            case "ArrowDown":
+                break;
             case " ":
                 if (currentCharIndex == 0) {
                     break;
@@ -96,6 +116,7 @@ const TypeBox = () => {
                 setCurrentWordIndex(currentWordIndex + 1);
                 setCurrentCharIndex(0);
                 newTypedWords = typedWords.concat("");
+                console.log(newTypedWords);
                 setTypedWords(newTypedWords);
 
                 
@@ -128,7 +149,7 @@ const TypeBox = () => {
 
         let typeboxChar = typeboxWords[currentWordIndex].children[currentCharIndex];
 
-        console.log(typeboxChar);
+        // console.log(typeboxChar);
 
         let caret = caretRef.current!;
 
@@ -157,15 +178,21 @@ const TypeBox = () => {
     }, [currentCharIndex])
 
     useEffect(() => {
-        console.log(typedWords);
-        console.log(currentCharIndex);
+        // console.log(typedWords);
+        // console.log(currentCharIndex);
     }, [typedWords]);
 
+    const refocus = () => {
+        let input = inputRef.current!;
+        input.focus();
+    };
+
+    const inputRef = useRef<HTMLInputElement>(null);
     return (
         <>
-            <input onKeyDown={handleKeyDown}></input>
+            <input onKeyDown={handleKeyDown} ref={inputRef}></input>
 
-            <div className="type-box" ref={typeboxRef}>
+            <div className="type-box" ref={typeboxRef} onClick={() => refocus()}>
                 <div className="caret" ref={caretRef}></div>
 
                 {targetWords.map((word, wordIndex) => {
