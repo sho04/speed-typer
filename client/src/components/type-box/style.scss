@@ -1,41 +1,66 @@
 @use "../../base.scss";
 
+$font-size : 28px;
+
 .type-box {
     width : 800px;
     height : 300px;
     background-color : black;
     border : 1px solid black;
     outline : none;
+    display : flex;
+    overflow : wrap;
+    border : 1px white solid;
+}
+
+.space {
+    font-size : $font-size;
+    font-family : base.$font-stack;
+    font-size : $font-size;
+    opacity : 1;
+    color: grey;
+    transition: all 0.2s ease;
 }
 
 .char {
     font-family : base.$font-stack;
-    font-size : 20px;
+    font-size : $font-size;
+    opacity : 1;
     color: grey;
+    transition: all 0.2s ease;
 }
 
 .char-correct {
     font-family : base.$font-stack;
-    font-size : 20px;
+    font-size : $font-size;
+    opacity : 1;
     color : white;
+    transition: all 0.2s ease;
 }
 
 .char-incorrect {
     font-family : base.$font-stack;
-    font-size : 20px;
+    font-size : $font-size;
     color : red;
+    transition: all 0.2s ease;
 }
 
 .char-junk {
     font-family : base.$font-stack;
-    font-size : 20px;
+    font-size : $font-size;
     color : darkred;
+    transition: all 0.2s ease;
 }
 
-
-.char-incorrect-space {
-    font-family : base.$font-stack;
-    font-size : 20px;
-    background-color : red;
+.caret {
+    position : absolute;
+    color : white;
+    background-color : white;
+    mix-blend-mode : difference;
+    display : inline-block;
+    width : 2px;
+    height : 34px;
+    animation : blink 1s infinite;
+    transition : all 0.1s ease;
 }
 

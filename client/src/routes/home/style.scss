@@ -1,2 +1,12 @@
 @use '../../base.scss';
 
+.home {
+    width : 100vw;
+    height : 100vh;
+    background-color : black;
+    margin : 0;
+    padding : 0;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+}

@@ -1,5 +1,5 @@
 import react from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import "./style.scss";
 
@@ -11,6 +11,10 @@ const TypeBox = () => {
     const [targetWords, setTargetWords] = useState(targetText.split(" "));
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
+    const [characterRefs, setCharacterRefs] = useState([]);
+
+    const caretRef = useRef<HTMLDivElement>(null);
+    const typeboxRef = useRef<HTMLDivElement>(null);
 
     const [typedWords, setTypedWords] = useState([""]);
 
@@ -48,6 +52,7 @@ const TypeBox = () => {
         }
     };
 
+    // All key down and type event logic
     const handleKeyDown = (event: react.KeyboardEvent<HTMLInputElement>) => {
         let code = event.key.charCodeAt(0);
         let key = event.key;
@@ -69,11 +74,19 @@ const TypeBox = () => {
                     setCurrentCharIndex(currentCharIndex - 1);
                 } else if (currentWordIndex > 0) {
                     setCurrentWordIndex(currentWordIndex - 1);
-                    setCurrentCharIndex(typedWords[currentWordIndex - 1].length);
+                    setCurrentCharIndex(
+                        typedWords[currentWordIndex - 1].length
+                    );
+                    newTypedWords = typedWords.slice(0, -1);
+                    setTypedWords(newTypedWords);
                 }
+
+                
 
                 break;
             case "Shift":
+                break;
+            case "Enter":
                 break;
             case " ":
                 if (currentCharIndex == 0) {
@@ -84,6 +97,8 @@ const TypeBox = () => {
                 setCurrentCharIndex(0);
                 newTypedWords = typedWords.concat("");
                 setTypedWords(newTypedWords);
+
+                
 
                 break;
             default:
@@ -96,18 +111,63 @@ const TypeBox = () => {
                     }
                 });
                 setTypedWords(newTypedWords);
+
+                
                 break;
         }
     };
 
+    const moveCaret = () => {
+        let typebox = typeboxRef.current!;
+        let typeboxWords = [];
+
+        for (let i = 1; i < typebox.children.length; i++) {
+            //console.log(typebox.children[i])
+            typeboxWords.push(typebox.children[i]);
+        }
+
+        let typeboxChar = typeboxWords[currentWordIndex].children[currentCharIndex];
+
+        console.log(typeboxChar);
+
+        let caret = caretRef.current!;
+
+        let currentCharRect = typeboxChar.getBoundingClientRect();
+        //console.log(currentCharRect.right);
+        caret.style.left = currentCharRect.right + "px";
+        caret.style.top = currentCharRect.top + "px";
+        caret.style.height = currentCharRect.height + "px";
+        //caret.style.left = "100px";
+    };
+
+    const getLength = (arr: string[]) => {
+        let length = 0;
+        arr.forEach((word) => {
+            length += word.length;
+        });
+        return length;
+    }
+
+    useEffect(() => {
+        
+    }, []);
+
+    useEffect(() => {
+        moveCaret();
+    }, [currentCharIndex])
+
     useEffect(() => {
         console.log(typedWords);
+        console.log(currentCharIndex);
     }, [typedWords]);
-
 
     return (
         <>
-            <div className="type-box" onKeyDown={handleKeyDown} tabIndex={0}>
+            <input onKeyDown={handleKeyDown}></input>
+
+            <div className="type-box" ref={typeboxRef}>
+                <div className="caret" ref={caretRef}></div>
+
                 {targetWords.map((word, wordIndex) => {
                     let junkText = getJunkText(word, wordIndex);
 
@@ -121,7 +181,10 @@ const TypeBox = () => {
                                 );
 
                                 return (
-                                    <span key={charIndex} className={className}>
+                                    <span
+                                        key={charIndex}
+                                        className={className}
+                                    >
                                         {char}
                                     </span>
                                 );
@@ -137,7 +200,7 @@ const TypeBox = () => {
                                 );
                             })}
 
-                            <span>&nbsp;</span>
+                            <span className="space">&nbsp;</span>
                         </span>
                     );
                 })}
