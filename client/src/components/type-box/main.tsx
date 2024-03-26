@@ -8,18 +8,18 @@ const TypeBox = () => {
         "This is the target text to type out."
     );
 
+    // Vars
     const [targetWords, setTargetWords] = useState(targetText.split(" "));
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
-    const [characterRefs, setCharacterRefs] = useState([]);
-
-    const caretRef = useRef<HTMLDivElement>(null);
-    const typeboxRef = useRef<HTMLDivElement>(null);
-
     const [typedWords, setTypedWords] = useState([""]);
 
-    const [queue, setQueue] = useState("");
+    // Refs
+    const caretRef = useRef<HTMLDivElement>(null);
+    const typeboxRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
+    // Get character calss from the current word and character index.
     const getCharClass = (
         char: string,
         charIndex: number,
@@ -38,10 +38,10 @@ const TypeBox = () => {
         } else {
             return "char-incorrect";
         }
-
-        return "char";
     };
 
+
+    // Get junk text to display after the current word if the space isn't typed.
     const getJunkText = (word: string, wordIndex: number) => {
         if (typedWords[wordIndex] === undefined) return "";
         if (typedWords[wordIndex].length > word.length) {
@@ -61,6 +61,8 @@ const TypeBox = () => {
 
         switch (key) {
             case "Backspace":
+
+                // Delete the letter from the current word.
                 newTypedWords = typedWords.map((word, index) => {
                     if (index === currentWordIndex) {
                         return word.slice(0, -1);
@@ -70,6 +72,7 @@ const TypeBox = () => {
                 });
                 setTypedWords(newTypedWords);
 
+                // Delete the last word if we're at the beginning of the current word.
                 if (currentCharIndex > 0) {
                     setCurrentCharIndex(currentCharIndex - 1);
                 } else if (currentWordIndex > 0) {
@@ -80,8 +83,6 @@ const TypeBox = () => {
                     newTypedWords = typedWords.slice(0, -1);
                     setTypedWords(newTypedWords);
                 }
-
-                
 
                 break;
             case "Shift":
@@ -109,20 +110,28 @@ const TypeBox = () => {
             case "ArrowDown":
                 break;
             case " ":
+                
+                // If we're at the first letter of the word
                 if (currentCharIndex == 0) {
                     break;
                 }
 
+                // If we're complete with the entire text don't do anything.
+                if (typedWords.length == targetText.length && currentCharIndex == typedWords[currentWordIndex].length) {
+                    break;
+                }
+
+                // Go to the next word.
                 setCurrentWordIndex(currentWordIndex + 1);
                 setCurrentCharIndex(0);
                 newTypedWords = typedWords.concat("");
                 console.log(newTypedWords);
                 setTypedWords(newTypedWords);
 
-                
-
                 break;
             default:
+
+                // Add the letter to the current word.
                 newTypedWords = typedWords.map((word, index) => {
                     if (index === currentWordIndex) {
                         setCurrentCharIndex(currentCharIndex + 1);
@@ -133,23 +142,22 @@ const TypeBox = () => {
                 });
                 setTypedWords(newTypedWords);
 
-                
                 break;
         }
     };
 
+    // Move the caret to the current character using refs.
     const moveCaret = () => {
         let typebox = typeboxRef.current!;
         let typeboxWords = [];
 
         for (let i = 1; i < typebox.children.length; i++) {
-            //console.log(typebox.children[i])
+            
             typeboxWords.push(typebox.children[i]);
         }
 
-        let typeboxChar = typeboxWords[currentWordIndex].children[currentCharIndex];
-
-        // console.log(typeboxChar);
+        let typeboxChar =
+            typeboxWords[currentWordIndex].children[currentCharIndex];
 
         let caret = caretRef.current!;
 
@@ -161,38 +169,35 @@ const TypeBox = () => {
         //caret.style.left = "100px";
     };
 
-    const getLength = (arr: string[]) => {
-        let length = 0;
-        arr.forEach((word) => {
-            length += word.length;
-        });
-        return length;
-    }
+    // Refocus to input
+    
+    const refocus = () => {
+        let input = inputRef.current!;
+        input.focus();
+    };
 
-    useEffect(() => {
-        
-    }, []);
+    // USE EFFECTS
+    useEffect(() => {}, []);
 
     useEffect(() => {
         moveCaret();
-    }, [currentCharIndex])
+    }, [currentCharIndex]);
 
     useEffect(() => {
         // console.log(typedWords);
         // console.log(currentCharIndex);
     }, [typedWords]);
 
-    const refocus = () => {
-        let input = inputRef.current!;
-        input.focus();
-    };
 
-    const inputRef = useRef<HTMLInputElement>(null);
     return (
         <>
             <input onKeyDown={handleKeyDown} ref={inputRef}></input>
 
-            <div className="type-box" ref={typeboxRef} onClick={() => refocus()}>
+            <div
+                className="type-box"
+                ref={typeboxRef}
+                onClick={() => refocus()}
+            >
                 <div className="caret" ref={caretRef}></div>
 
                 {targetWords.map((word, wordIndex) => {
@@ -208,10 +213,7 @@ const TypeBox = () => {
                                 );
 
                                 return (
-                                    <span
-                                        key={charIndex}
-                                        className={className}
-                                    >
+                                    <span key={charIndex} className={className}>
                                         {char}
                                     </span>
                                 );
