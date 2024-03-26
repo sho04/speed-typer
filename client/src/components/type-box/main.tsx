@@ -1,109 +1,146 @@
 import react from "react";
 import { useState, useEffect } from "react";
 
-import './style.scss';
+import "./style.scss";
 
 const TypeBox = () => {
-
     const [targetText, setTargetText] = useState(
         "This is the target text to type out."
     );
-    const [targetTextArray, setTargetTextArray] = useState(targetText.split(""));
-    const [targetTextState, setTargetTextState] = useState(targetTextArray.map((char, index) => {
-        return {
-            char: char,
-            accepted: false,
-        }
-    }))
 
+    const [targetWords, setTargetWords] = useState(targetText.split(" "));
+    const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
-    const [typedText, setTypedText] = useState("");
 
-    
+    const [typedWords, setTypedWords] = useState([""]);
 
     const [queue, setQueue] = useState("");
 
-    const handleKeyDown = (event: react.KeyboardEvent<HTMLInputElement>) => {
+    const getCharClass = (
+        char: string,
+        charIndex: number,
+        wordIndex: number
+    ) => {
+        if (wordIndex > currentWordIndex) {
+            return "char";
+        } else if (wordIndex == currentWordIndex) {
+            if (charIndex >= currentCharIndex) {
+                return "char";
+            }
+        }
 
+        if (char === typedWords[wordIndex][charIndex]) {
+            return "char-correct";
+        } else {
+            return "char-incorrect";
+        }
+
+        return "char";
+    };
+
+    const getJunkText = (word: string, wordIndex: number) => {
+        if (typedWords[wordIndex] === undefined) return "";
+        if (typedWords[wordIndex].length > word.length) {
+            console.log(typedWords[wordIndex].slice(word.length));
+            return typedWords[wordIndex].slice(word.length);
+        } else {
+            return "";
+        }
+    };
+
+    const handleKeyDown = (event: react.KeyboardEvent<HTMLInputElement>) => {
         let code = event.key.charCodeAt(0);
         let key = event.key;
 
+        let newTypedWords: string[];
+
         switch (key) {
             case "Backspace":
-                setTypedText(typedText.slice(0, typedText.length - 1));
-                setCurrentCharIndex(currentCharIndex - 1);
-                break;
-            case "Enter":
-                setTypedText("");
+                newTypedWords = typedWords.map((word, index) => {
+                    if (index === currentWordIndex) {
+                        return word.slice(0, -1);
+                    } else {
+                        return word;
+                    }
+                });
+                setTypedWords(newTypedWords);
+
+                if (currentCharIndex > 0) {
+                    setCurrentCharIndex(currentCharIndex - 1);
+                } else if (currentWordIndex > 0) {
+                    setCurrentWordIndex(currentWordIndex - 1);
+                    setCurrentCharIndex(typedWords[currentWordIndex - 1].length);
+                }
+
                 break;
             case "Shift":
-                setQueue("Shift");
+                break;
+            case " ":
+                if (currentCharIndex == 0) {
+                    break;
+                }
+
+                setCurrentWordIndex(currentWordIndex + 1);
+                setCurrentCharIndex(0);
+                newTypedWords = typedWords.concat("");
+                setTypedWords(newTypedWords);
+
                 break;
             default:
-                if (code >= 32 && code <= 126) {
-
-                    if (queue === "Shift") {
-                        key = key.toUpperCase();
-                        setTypedText(typedText + key);
-                        setQueue("");
+                newTypedWords = typedWords.map((word, index) => {
+                    if (index === currentWordIndex) {
+                        setCurrentCharIndex(currentCharIndex + 1);
+                        return word.concat(key);
                     } else {
-                        setTypedText(typedText + key);
+                        return word;
                     }
-
-                    setCurrentCharIndex(currentCharIndex + 1);
-                    
-                }
+                });
+                setTypedWords(newTypedWords);
+                break;
         }
-        
-        // console.log("wow");
     };
 
     useEffect(() => {
-        console.log(typedText);
-    }, [typedText]);
+        console.log(typedWords);
+    }, [typedWords]);
+
 
     return (
         <>
-
             <div className="type-box" onKeyDown={handleKeyDown} tabIndex={0}>
-                {targetText.split("").map((char, index) => {
+                {targetWords.map((word, wordIndex) => {
+                    let junkText = getJunkText(word, wordIndex);
 
-                    if (index >= currentCharIndex) {
-                        return (
-                            <span key={index} className="char">
-                                {char}
-                            </span>
-                        )
-                    }
+                    return (
+                        <span key={wordIndex}>
+                            {word.split("").map((char, charIndex) => {
+                                let className = getCharClass(
+                                    char,
+                                    charIndex,
+                                    wordIndex
+                                );
 
-                    if (char === " " && typedText[index] != " ") {
-                        return (
-                            <span key={index} className="char-incorrect">
-                                {typedText[index]}
-                            </span>
-                        )
-                    }
+                                return (
+                                    <span key={charIndex} className={className}>
+                                        {char}
+                                    </span>
+                                );
+                            })}
+                            {junkText.split("").map((char, charIndex) => {
+                                return (
+                                    <span
+                                        key={charIndex}
+                                        className={"char-junk"}
+                                    >
+                                        {char}
+                                    </span>
+                                );
+                            })}
 
-                    if (typedText[index] === char) {
-                        return (
-                            <span key={index} className="char-correct">
-                                {char}
-                            </span>
-                        )
-                    } 
-                    
-                    if (typedText[index] !== char) {
-                        return (
-                            <span key={index} className="char-incorrect">
-                                {char}
-                            </span>
-                        )
-                    
-                    }
-
-                    
+                            <span>&nbsp;</span>
+                        </span>
+                    );
                 })}
-
             </div>
         </>
     );
