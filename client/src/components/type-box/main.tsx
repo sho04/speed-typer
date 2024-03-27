@@ -5,7 +5,7 @@ import "./style.scss";
 
 const TypeBox = () => {
     const [targetText, setTargetText] = useState(
-        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair."
+        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.The battle of New Carthage, part of the Second Punic War, took place in early 209 BC when a Roman army under Publius Scipio (bust pictured) assaulted New Carthage, held by a Carthaginian garrison under Mago. Late in 210 BC Scipio took command of Roman forces in Iberia (modern Spain and Portugal) and decided to strike at the regional centre of Carthaginian power: its capital, New Carthage. He marched on the city and immediately attacked it. After defeating a Carthaginian force outside the walls, he pressed attacks on the east gate and the walls. Both were repulsed, but later that day Scipio renewed them. "
     );
 
     // Vars
@@ -19,6 +19,7 @@ const TypeBox = () => {
     const caretRef = useRef<HTMLDivElement>(null);
     const typeboxRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const wordRef = useRef<HTMLSpanElement>(null);
 
     // Get character calss from the current word and character index.
     const getCharClass = (
@@ -168,6 +169,27 @@ const TypeBox = () => {
         //caret.style.left = "100px";
     };
 
+    // Initialize variable styles of typebox
+    const initializeTypebox = () => {
+        let typebox = typeboxRef.current!;
+        let wordRefRect = wordRef.current!.getBoundingClientRect();
+
+        typebox.style.height =
+        wordRefRect.height * 5 + 40 + "px";
+
+        typebox.style.marginTop = wordRefRect.height + "px";
+        typebox.style.marginBottom = wordRefRect.height + "px";
+    }
+
+    const scrollText = () => {
+        let typebox = typeboxRef.current!;
+        
+        let caret = caretRef.current!;
+
+
+
+    }
+
     // Refocus to input
 
     const refocus = () => {
@@ -178,6 +200,7 @@ const TypeBox = () => {
     // USE EFFECTS
     useEffect(() => {
         moveCaret();
+        initializeTypebox();
     }, []);
 
     useEffect(() => {
@@ -191,6 +214,7 @@ const TypeBox = () => {
 
     useEffect(() => {
         moveCaret();
+        scrollText();
     }, [currentCharIndex]);
 
     useEffect(() => {
@@ -201,47 +225,55 @@ const TypeBox = () => {
     return (
         <>
             <input onKeyDown={handleKeyDown} ref={inputRef}></input>
+            <div className="type-box-container">
+                <div
+                    className="type-box"
+                    ref={typeboxRef}
+                    onClick={() => refocus()}
+                >
+                    <div className="caret" ref={caretRef}></div>
 
-            <div
-                className="type-box"
-                ref={typeboxRef}
-                onClick={() => refocus()}
-            >
-                <div className="caret" ref={caretRef}></div>
+                    {targetWords.map((word, wordIndex) => {
+                        let junkText = getJunkText(word, wordIndex);
 
-                {targetWords.map((word, wordIndex) => {
-                    let junkText = getJunkText(word, wordIndex);
+                        return (
+                            <span
+                                key={wordIndex}
+                                className="word"
+                                ref={wordRef}
+                            >
+                                {word.split("").map((char, charIndex) => {
+                                    let className = getCharClass(
+                                        char,
+                                        charIndex,
+                                        wordIndex
+                                    );
 
-                    return (
-                        <span key={wordIndex} className="word">
-                            {word.split("").map((char, charIndex) => {
-                                let className = getCharClass(
-                                    char,
-                                    charIndex,
-                                    wordIndex
-                                );
+                                    return (
+                                        <span
+                                            key={charIndex}
+                                            className={className}
+                                        >
+                                            {char}
+                                        </span>
+                                    );
+                                })}
+                                {junkText.split("").map((char, charIndex) => {
+                                    return (
+                                        <span
+                                            key={charIndex}
+                                            className={"char-junk"}
+                                        >
+                                            {char}
+                                        </span>
+                                    );
+                                })}
 
-                                return (
-                                    <span key={charIndex} className={className}>
-                                        {char}
-                                    </span>
-                                );
-                            })}
-                            {junkText.split("").map((char, charIndex) => {
-                                return (
-                                    <span
-                                        key={charIndex}
-                                        className={"char-junk"}
-                                    >
-                                        {char}
-                                    </span>
-                                );
-                            })}
-
-                            <span className="space">&nbsp;</span>
-                        </span>
-                    );
-                })}
+                                <span className="space">&nbsp;</span>
+                            </span>
+                        );
+                    })}
+                </div>
             </div>
         </>
     );
