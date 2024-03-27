@@ -3,13 +3,16 @@
 $font-size : 28px;
 
 .type-box {
-    width : 800px;
-    height : 300px;
+    width : 75%;
+    height : fit-content;
     background-color : black;
     border : 1px solid black;
     outline : none;
     display : flex;
-    overflow : wrap;
+    flex-wrap: wrap;
+    flex-grow : 0;
+    align-items : flex-start;
+    justify-content : flex-start;
     border : 1px white solid;
 }
 
@@ -29,6 +32,12 @@ input {
     opacity : 1;
     color: grey;
     transition: all 0.2s ease;
+}
+
+.word {
+    margin-bottom : 8px;
+    padding : 0px;
+    height : fit-content;
 }
 
 .char {

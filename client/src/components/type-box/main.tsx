@@ -5,7 +5,7 @@ import "./style.scss";
 
 const TypeBox = () => {
     const [targetText, setTargetText] = useState(
-        "This is the target text to type out."
+        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair."
     );
 
     // Vars
@@ -41,7 +41,6 @@ const TypeBox = () => {
         }
     };
 
-
     // Get junk text to display after the current word if the space isn't typed.
     const getJunkText = (word: string, wordIndex: number) => {
         if (typedWords[wordIndex] === undefined) return "";
@@ -62,7 +61,6 @@ const TypeBox = () => {
 
         switch (key) {
             case "Backspace":
-
                 // Delete the letter from the current word.
                 newTypedWords = typedWords.map((word, index) => {
                     if (index === currentWordIndex) {
@@ -111,7 +109,6 @@ const TypeBox = () => {
             case "ArrowDown":
                 break;
             case " ":
-                
                 // If we're at the first letter of the word
                 if (currentCharIndex == 0) {
                     break;
@@ -130,7 +127,6 @@ const TypeBox = () => {
 
                 break;
             default:
-
                 if (complete) {
                     break;
                 }
@@ -156,7 +152,6 @@ const TypeBox = () => {
         let typeboxWords = [];
 
         for (let i = 1; i < typebox.children.length; i++) {
-            
             typeboxWords.push(typebox.children[i]);
         }
 
@@ -174,17 +169,22 @@ const TypeBox = () => {
     };
 
     // Refocus to input
-    
+
     const refocus = () => {
         let input = inputRef.current!;
         input.focus();
     };
 
     // USE EFFECTS
-    useEffect(() => {}, []);
+    useEffect(() => {
+        moveCaret();
+    }, []);
 
     useEffect(() => {
-        if (currentCharIndex == targetWords[currentWordIndex].length && currentWordIndex == targetWords.length - 1) {
+        if (
+            currentCharIndex == targetWords[currentWordIndex].length &&
+            currentWordIndex == targetWords.length - 1
+        ) {
             setComplete(true);
         }
     }, [currentCharIndex, currentWordIndex]);
@@ -197,7 +197,6 @@ const TypeBox = () => {
         // console.log(typedWords);
         // console.log(currentCharIndex);
     }, [typedWords]);
-
 
     return (
         <>
@@ -214,7 +213,7 @@ const TypeBox = () => {
                     let junkText = getJunkText(word, wordIndex);
 
                     return (
-                        <span key={wordIndex}>
+                        <span key={wordIndex} className="word">
                             {word.split("").map((char, charIndex) => {
                                 let className = getCharClass(
                                     char,
