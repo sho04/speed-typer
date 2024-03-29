@@ -8,12 +8,18 @@ const TypeBox = () => {
         "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.The battle of New Carthage, part of the Second Punic War, took place in early 209 BC when a Roman army under Publius Scipio (bust pictured) assaulted New Carthage, held by a Carthaginian garrison under Mago. Late in 210 BC Scipio took command of Roman forces in Iberia (modern Spain and Portugal) and decided to strike at the regional centre of Carthaginian power: its capital, New Carthage. He marched on the city and immediately attacked it. After defeating a Carthaginian force outside the walls, he pressed attacks on the east gate and the walls. Both were repulsed, but later that day Scipio renewed them. "
     );
 
+    // Constants
+    const lineOffset = 3;
+
     // Vars
     const [targetWords, setTargetWords] = useState(targetText.split(" "));
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
     const [typedWords, setTypedWords] = useState([""]);
     const [complete, setComplete] = useState(false);
+    const [textHeight, setTextHeight] = useState(0);
+    const [caretPosition, setCaretPosition] = useState([0, 0]);
+    const [lineCount, setLineCount] = useState(0);
 
     // Refs
     const caretRef = useRef<HTMLDivElement>(null);
@@ -46,7 +52,7 @@ const TypeBox = () => {
     const getJunkText = (word: string, wordIndex: number) => {
         if (typedWords[wordIndex] === undefined) return "";
         if (typedWords[wordIndex].length > word.length) {
-            console.log(typedWords[wordIndex].slice(word.length));
+            //console.log(typedWords[wordIndex].slice(word.length));
             return typedWords[wordIndex].slice(word.length);
         } else {
             return "";
@@ -123,7 +129,7 @@ const TypeBox = () => {
                 setCurrentWordIndex(currentWordIndex + 1);
                 setCurrentCharIndex(0);
                 newTypedWords = typedWords.concat("");
-                console.log(newTypedWords);
+                //console.log(newTypedWords);
                 setTypedWords(newTypedWords);
 
                 break;
@@ -162,11 +168,16 @@ const TypeBox = () => {
         let caret = caretRef.current!;
 
         let currentCharRect = typeboxChar.getBoundingClientRect();
-        //console.log(currentCharRect.right);
-        caret.style.left = currentCharRect.left + "px";
-        caret.style.top = currentCharRect.top + "px";
+        let typeboxRect = typebox.getBoundingClientRect();
+
+        // Top needs to offset by the position of the typebox div and the scroll offset
+        let top = currentCharRect.top - (typeboxRect.top - typebox.scrollTop);
+
+        caret.style.left = currentCharRect.left - typeboxRect.left + "px";
+        caret.style.top = top + "px";
         caret.style.height = currentCharRect.height + "px";
-        //caret.style.left = "100px";
+
+        setCaretPosition([currentCharRect.left - typeboxRect.left, top]);
     };
 
     // Initialize variable styles of typebox
@@ -174,22 +185,26 @@ const TypeBox = () => {
         let typebox = typeboxRef.current!;
         let wordRefRect = wordRef.current!.getBoundingClientRect();
 
-        typebox.style.height =
-        wordRefRect.height * 5 + 40 + "px";
+        typebox.style.height = wordRefRect.height * 5 + 40 + "px";
 
-        typebox.style.marginTop = wordRefRect.height + "px";
-        typebox.style.marginBottom = wordRefRect.height + "px";
-    }
+        // typebox.style.marginTop = wordRefRect.height + "px";
+        // typebox.style.marginBottom = wordRefRect.height + "px";
 
+        setTextHeight(wordRefRect.height);
+    };
+
+    // Scroll the div to the current line.
     const scrollText = () => {
         let typebox = typeboxRef.current!;
-        
         let caret = caretRef.current!;
 
-    }
+        typebox.scrollTo({
+            top: textHeight * (lineCount - lineOffset),
+            behavior: "smooth",
+        });
+    };
 
     // Refocus to input
-
     const refocus = () => {
         let input = inputRef.current!;
         input.focus();
@@ -197,9 +212,22 @@ const TypeBox = () => {
 
     // USE EFFECTS
     useEffect(() => {
-        moveCaret();
+        //moveCaret();
         initializeTypebox();
     }, []);
+
+    // Run whenever the y position of the caret changes
+    useEffect(() => {
+        //console.log(caretPosition[0] + " " + caretPosition[1]);
+        setLineCount(Math.floor(caretPosition[1] / textHeight + 1));
+    }, [caretPosition[1]]);
+
+    useEffect(() => {
+        if (lineCount > lineOffset) {
+            scrollText();
+        }
+        console.log(lineCount);
+    }, [lineCount]);
 
     useEffect(() => {
         if (
@@ -210,11 +238,13 @@ const TypeBox = () => {
         }
     }, [currentCharIndex, currentWordIndex]);
 
+    // Whenever the current character index changes
     useEffect(() => {
         moveCaret();
-        scrollText();
+        //scrollText();
     }, [currentCharIndex]);
 
+    // Whenever a character is typed
     useEffect(() => {
         // console.log(typedWords);
         // console.log(currentCharIndex);
