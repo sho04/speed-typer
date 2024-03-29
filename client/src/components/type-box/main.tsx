@@ -186,8 +186,6 @@ const TypeBox = () => {
         
         let caret = caretRef.current!;
 
-
-
     }
 
     // Refocus to input
