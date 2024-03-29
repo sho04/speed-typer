@@ -14,15 +14,15 @@ $font-size : 28px;
 
 .type-box {
     width : 80%;
+    position : absolute;
     height : fit-content;
     background-color : black;
-    position : aboslute;
     border : 1px solid black;
     outline : none;
     display : flex;
     flex-wrap: wrap;
     flex-grow : 0;
-    //overflow-y : scroll;
+    overflow-y : scroll;
     align-items : flex-start;
 
     justify-content : flex-start;
@@ -48,7 +48,7 @@ input {
 }
 
 .word {
-    margin-bottom : 8px;
+    padding-bottom : 8px;
     padding : 0px;
     height : fit-content;
 }
@@ -85,6 +85,9 @@ input {
 
 .caret {
     position : absolute;
+    top : 0;
+    left : 0;
+    
     color : white;
     background-color : white;
     mix-blend-mode : difference;
