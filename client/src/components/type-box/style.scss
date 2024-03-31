@@ -3,8 +3,6 @@
 $font-size : 28px;
 
 .type-box-container {
-    width : 100%;
-    height : auto;
     display : flex;
     align-items : center;
     justify-content : center;
@@ -17,7 +15,7 @@ $font-size : 28px;
     position : absolute;
     height : fit-content;
     background-color : black;
-    border : 1px solid black;
+    //border : 1px solid black;
     outline : none;
     display : flex;
     flex-wrap: wrap;
@@ -26,7 +24,14 @@ $font-size : 28px;
     align-items : flex-start;
 
     justify-content : flex-start;
-    border : 1px white solid;
+
+    
+    //border : 1px white solid;
+}
+
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
 input {

@@ -9,6 +9,7 @@ const TypeBox = () => {
     );
 
     // Constants
+    const lines = 5;
     const lineOffset = 3;
 
     // Vars
@@ -184,7 +185,7 @@ const TypeBox = () => {
         let typebox = typeboxRef.current!;
         let wordRefRect = wordRef.current!.getBoundingClientRect();
 
-        typebox.style.height = wordRefRect.height * 5 + 40 + "px";
+        typebox.style.height = wordRefRect.height * lines + "px";
 
         // typebox.style.marginTop = wordRefRect.height + "px";
         // typebox.style.marginBottom = wordRefRect.height + "px";
@@ -198,9 +199,11 @@ const TypeBox = () => {
         let caret = caretRef.current!;
 
         typebox.scrollTo({
-            top: textHeight * (lineCount - lineOffset),
+            top: textHeight * (lineCount - lineOffset + 1),
             behavior: "smooth",
         });
+
+        console.log("scrolling to line " + lineCount);
     };
 
     // Refocus to input
@@ -217,15 +220,21 @@ const TypeBox = () => {
 
     // Run whenever the y position of the caret changes
     useEffect(() => {
+
+        
+
+        console.log(Math.round(caretPosition[1] / textHeight));
         //console.log(caretPosition[0] + " " + caretPosition[1]);
-        setLineCount(Math.floor(caretPosition[1] / textHeight + 1));
+        setLineCount(Math.round(caretPosition[1] / textHeight));
     }, [caretPosition[1]]);
 
     useEffect(() => {
-        if (lineCount > lineOffset) {
+
+
+        if (Math.round(caretPosition[1] / textHeight) > lineOffset - 1) {
             scrollText();
         }
-        console.log(lineCount);
+        
     }, [lineCount]);
 
     useEffect(() => {
