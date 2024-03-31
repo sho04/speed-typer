@@ -12,35 +12,11 @@ const TypeBox = () => {
         "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair. The Jarrow March (5–31 October 1936) was a protest against the unemployment and poverty suffered in the Tyneside town of Jarrow, in the north-east of England, during the 1930s. Around 200 men marched from Jarrow to London to petition the government to restore industry in the town after the closure in 1934 of Palmer's shipyard. Palmer's had launched more than 1,000 ships since 1852. In the 1920s, mismanagement and changed world trade conditions caused a decline which led to the yard's closure. When plans for its replacement by a steelworks were thwarted, the lack of any large-scale employment in the town led the borough council to organise the march. The House of Commons received the petition but took no action, and the march produced few immediate results. The Jarrovians went home believing that they had failed. In subsequent years the Jarrow March became recognised as a defining event of the 1930s and helped to prepare the way for wide social reform after the Second World War."
     );
 
-    // const typeState = {
-    //     targetText: "",
-    //     targetWords: targetText.split(" "),
-    //     currentWordIndex: 0,
-    //     currentCharIndex: 0,
-    //     typedWords: [""],
-    //     complete: false,
-    // };
-
-    // const domState = {
-    //     textHeight: 0,
-    //     caretPosition: [0, 0],
-    //     lines: 5,
-    //     lineOffset: 3,
-    //     lineCount: 0,
-    // };
-
     const [typeState, typeDispatch] = useReducer(typeReducer, initialTypeState);
 
     // Constants
     const lines = 5;
     const lineOffset = 3;
-
-    // Vars
-    // const [targetWords, setTargetWords] = useState(targetText.split(" "));
-    // const [currentWordIndex, setCurrentWordIndex] = useState(0);
-    // const [currentCharIndex, setCurrentCharIndex] = useState(0);
-    // const [typedWords, setTypedWords] = useState([""]);
-    // const [complete, setComplete] = useState(false);
 
     const [textHeight, setTextHeight] = useState(0);
     const [caretPosition, setCaretPosition] = useState([0, 0]);
@@ -171,9 +147,6 @@ const TypeBox = () => {
         let wordRefRect = wordRef.current!.getBoundingClientRect();
 
         typebox.style.height = wordRefRect.height * lines + "px";
-
-        // typebox.style.marginTop = wordRefRect.height + "px";
-        // typebox.style.marginBottom = wordRefRect.height + "px";
 
         setTextHeight(wordRefRect.height);
     };
