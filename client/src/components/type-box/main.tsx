@@ -129,7 +129,6 @@ const TypeBox = () => {
                 setCurrentWordIndex(currentWordIndex + 1);
                 setCurrentCharIndex(0);
                 newTypedWords = typedWords.concat("");
-                //console.log(newTypedWords);
                 setTypedWords(newTypedWords);
 
                 break;
