@@ -46,6 +46,7 @@ const TypeBox = () => {
             return "char-correct";
         } else {
             if (typeState.typedWords[wordIndex][charIndex] === undefined) return "char";
+            //console.log(char + " " + typeState.typedWords[wordIndex][charIndex])
             return "char-incorrect";
         }
     };
