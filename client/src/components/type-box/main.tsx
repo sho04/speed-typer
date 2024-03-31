@@ -230,7 +230,6 @@ const TypeBox = () => {
 
     useEffect(() => {
 
-
         if (Math.round(caretPosition[1] / textHeight) > lineOffset - 1) {
             scrollText();
         }
