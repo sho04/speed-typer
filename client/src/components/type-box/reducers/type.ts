@@ -1,9 +1,9 @@
 type State = {
     targetText: string;
     targetWords: Array<string>;
+    typedWords: Array<string>;
     currentWordIndex: number;
     currentCharIndex: number;
-    typedWords: Array<string>;
     mode: "default";
     complete: false;
 };
@@ -20,11 +20,37 @@ const initialState: State = {
     complete: false,
 };
 
-type Actiond = 
-    | { type: 'type-letter'; paylod: string }
-    | { type: 'type-space'; payload: string }
+type Action = 
+    // Type a letter, payload is key typed
+    | { type: 'type-letter'; payload: string }
+
+    // Type a space
+    | { type: 'type-space' }
+
+    // Type a backspace
     | { type: 'type-backspace'};
 
-export default function type(state = initialState, action: any) {
-    
+export default function type(state : State, action: any): State {
+    switch (action.type) {
+        case 'type-letter': {
+            if (state.complete) {
+                return {...state}
+            }
+
+            let newCharIndex = state.currentCharIndex;
+            let newTypedWords = state.typedWords.map((word, index) => {
+                if (index === state.currentWordIndex) {
+                    newCharIndex++;
+                    return word.concat(action.payload);
+                } else {
+                    return word;
+                }
+            });
+            
+            return {...state, typedWords : newTypedWords, currentCharIndex: newCharIndex};
+        }
+
+    }
+
+    throw Error('Unknown action.');
 }
