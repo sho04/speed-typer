@@ -4,9 +4,30 @@ import { useState, useEffect, useRef } from "react";
 import "./style.scss";
 
 const TypeBox = () => {
+
+    // Typebox State
+    // This isn't used now but will be eventually so our state is nicer organized.
+    // Eventually we can seperate out the type state and the dom state.
     const [targetText, setTargetText] = useState(
         "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair."
     );
+
+    const typeState = {
+        targetText: "",
+        targetWords: targetText.split(" "),
+        currentWordIndex: 0,
+        currentCharIndex: 0,
+        typedWords: [""],
+        complete: false,
+    }
+
+    const domState = {
+        textHeight: 0,
+        caretPosition: [0, 0],
+        lines : 5,
+        lineOffset: 3,
+        lineCount: 0,
+    }
 
     // Constants
     const lines = 5;
@@ -238,8 +259,8 @@ const TypeBox = () => {
 
     useEffect(() => {
         if (
-            currentCharIndex == targetWords[currentWordIndex].length &&
-            currentWordIndex == targetWords.length - 1
+            currentCharIndex === targetWords[currentWordIndex].length &&
+            currentWordIndex === targetWords.length - 1
         ) {
             setComplete(true);
         }
