@@ -45,7 +45,7 @@ input {
 
 .space {
     font-size : $font-size;
-    font-family : base.$font-stack;
+    font-family : base.$font-stack-2;
     font-size : $font-size;
     opacity : 1;
     color: grey;
@@ -59,7 +59,7 @@ input {
 }
 
 .char {
-    font-family : base.$font-stack;
+    font-family : base.$font-stack-2;
     font-size : $font-size;
     opacity : 1;
     color: grey;
@@ -67,7 +67,7 @@ input {
 }
 
 .char-correct {
-    font-family : base.$font-stack;
+    font-family : base.$font-stack-2;
     font-size : $font-size;
     opacity : 1;
     color : white;
@@ -75,14 +75,14 @@ input {
 }
 
 .char-incorrect {
-    font-family : base.$font-stack;
+    font-family : base.$font-stack-2;
     font-size : $font-size;
     color : red;
     transition: all 0.2s ease;
 }
 
 .char-junk {
-    font-family : base.$font-stack;
+    font-family : base.$font-stack-2;
     font-size : $font-size;
     color : darkred;
     transition: all 0.2s ease;
