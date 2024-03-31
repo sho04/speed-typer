@@ -1,44 +1,47 @@
 import react from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useReducer } from "react";
+import { typeReducer, initialState as initialTypeState } from "./reducers/type";
 
 import "./style.scss";
 
 const TypeBox = () => {
-
     // Typebox State
     // This isn't used now but will be eventually so our state is nicer organized.
     // Eventually we can seperate out the type state and the dom state.
     const [targetText, setTargetText] = useState(
-        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair."
+        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair. The Jarrow March (5–31 October 1936) was a protest against the unemployment and poverty suffered in the Tyneside town of Jarrow, in the north-east of England, during the 1930s. Around 200 men marched from Jarrow to London to petition the government to restore industry in the town after the closure in 1934 of Palmer's shipyard. Palmer's had launched more than 1,000 ships since 1852. In the 1920s, mismanagement and changed world trade conditions caused a decline which led to the yard's closure. When plans for its replacement by a steelworks were thwarted, the lack of any large-scale employment in the town led the borough council to organise the march. The House of Commons received the petition but took no action, and the march produced few immediate results. The Jarrovians went home believing that they had failed. In subsequent years the Jarrow March became recognised as a defining event of the 1930s and helped to prepare the way for wide social reform after the Second World War."
     );
 
-    const typeState = {
-        targetText: "",
-        targetWords: targetText.split(" "),
-        currentWordIndex: 0,
-        currentCharIndex: 0,
-        typedWords: [""],
-        complete: false,
-    }
+    // const typeState = {
+    //     targetText: "",
+    //     targetWords: targetText.split(" "),
+    //     currentWordIndex: 0,
+    //     currentCharIndex: 0,
+    //     typedWords: [""],
+    //     complete: false,
+    // };
 
-    const domState = {
-        textHeight: 0,
-        caretPosition: [0, 0],
-        lines : 5,
-        lineOffset: 3,
-        lineCount: 0,
-    }
+    // const domState = {
+    //     textHeight: 0,
+    //     caretPosition: [0, 0],
+    //     lines: 5,
+    //     lineOffset: 3,
+    //     lineCount: 0,
+    // };
+
+    const [typeState, typeDispatch] = useReducer(typeReducer, initialTypeState);
 
     // Constants
     const lines = 5;
     const lineOffset = 3;
 
     // Vars
-    const [targetWords, setTargetWords] = useState(targetText.split(" "));
-    const [currentWordIndex, setCurrentWordIndex] = useState(0);
-    const [currentCharIndex, setCurrentCharIndex] = useState(0);
-    const [typedWords, setTypedWords] = useState([""]);
-    const [complete, setComplete] = useState(false);
+    // const [targetWords, setTargetWords] = useState(targetText.split(" "));
+    // const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    // const [currentCharIndex, setCurrentCharIndex] = useState(0);
+    // const [typedWords, setTypedWords] = useState([""]);
+    // const [complete, setComplete] = useState(false);
+
     const [textHeight, setTextHeight] = useState(0);
     const [caretPosition, setCaretPosition] = useState([0, 0]);
     const [lineCount, setLineCount] = useState(0);
@@ -55,15 +58,15 @@ const TypeBox = () => {
         charIndex: number,
         wordIndex: number
     ) => {
-        if (wordIndex > currentWordIndex) {
+        if (wordIndex > typeState.currentWordIndex) {
             return "char";
-        } else if (wordIndex == currentWordIndex) {
-            if (charIndex >= currentCharIndex) {
+        } else if (wordIndex == typeState.currentWordIndex) {
+            if (charIndex >= typeState.currentCharIndex) {
                 return "char";
             }
         }
 
-        if (char === typedWords[wordIndex][charIndex]) {
+        if (char === typeState.typedWords[wordIndex][charIndex]) {
             return "char-correct";
         } else {
             return "char-incorrect";
@@ -72,10 +75,10 @@ const TypeBox = () => {
 
     // Get junk text to display after the current word if the space isn't typed.
     const getJunkText = (word: string, wordIndex: number) => {
-        if (typedWords[wordIndex] === undefined) return "";
-        if (typedWords[wordIndex].length > word.length) {
+        if (typeState.typedWords[wordIndex] === undefined) return "";
+        if (typeState.typedWords[wordIndex].length > word.length) {
             //console.log(typedWords[wordIndex].slice(word.length));
-            return typedWords[wordIndex].slice(word.length);
+            return typeState.typedWords[wordIndex].slice(word.length);
         } else {
             return "";
         }
@@ -90,27 +93,7 @@ const TypeBox = () => {
 
         switch (key) {
             case "Backspace":
-                // Delete the letter from the current word.
-                newTypedWords = typedWords.map((word, index) => {
-                    if (index === currentWordIndex) {
-                        return word.slice(0, -1);
-                    } else {
-                        return word;
-                    }
-                });
-                setTypedWords(newTypedWords);
-
-                // Delete the last word if we're at the beginning of the current word.
-                if (currentCharIndex > 0) {
-                    setCurrentCharIndex(currentCharIndex - 1);
-                } else if (currentWordIndex > 0) {
-                    setCurrentWordIndex(currentWordIndex - 1);
-                    setCurrentCharIndex(
-                        typedWords[currentWordIndex - 1].length
-                    );
-                    newTypedWords = typedWords.slice(0, -1);
-                    setTypedWords(newTypedWords);
-                }
+                typeDispatch({ type: "type-backspace" });
 
                 break;
             case "Shift":
@@ -138,37 +121,11 @@ const TypeBox = () => {
             case "ArrowDown":
                 break;
             case " ":
-                // If we're at the first letter of the word
-                if (currentCharIndex == 0) {
-                    break;
-                }
-
-                if (complete) {
-                    break;
-                }
-
-                // Go to the next word.
-                setCurrentWordIndex(currentWordIndex + 1);
-                setCurrentCharIndex(0);
-                newTypedWords = typedWords.concat("");
-                setTypedWords(newTypedWords);
+                typeDispatch({ type: "type-space" });
 
                 break;
             default:
-                if (complete) {
-                    break;
-                }
-
-                // Add the letter to the current word.
-                newTypedWords = typedWords.map((word, index) => {
-                    if (index === currentWordIndex) {
-                        setCurrentCharIndex(currentCharIndex + 1);
-                        return word.concat(key);
-                    } else {
-                        return word;
-                    }
-                });
-                setTypedWords(newTypedWords);
+                typeDispatch({ type: "type-letter", payload: key });
 
                 break;
         }
@@ -183,8 +140,15 @@ const TypeBox = () => {
             typeboxWords.push(typebox.children[i]);
         }
 
-        let typeboxChar =
-            typeboxWords[currentWordIndex].children[currentCharIndex];
+        let typeboxChar;
+        if (typeState.currentWordIndex < typeboxWords.length) {
+            typeboxChar =
+            typeboxWords[typeState.currentWordIndex].children[
+                typeState.currentCharIndex
+            ];
+        } else {
+            return;
+        }
 
         let caret = caretRef.current!;
 
@@ -219,12 +183,13 @@ const TypeBox = () => {
         let typebox = typeboxRef.current!;
         let caret = caretRef.current!;
 
-        typebox.scrollTo({
-            top: textHeight * (lineCount - lineOffset + 1),
-            behavior: "smooth",
-        });
+        typebox.scrollTop = textHeight * (lineCount - lineOffset + 1);
 
-        console.log("scrolling to line " + lineCount);
+        // typebox.scrollTo({
+        //     top: textHeight * (lineCount - lineOffset + 1),
+        //     behavior: "smooth",
+        // });
+
     };
 
     // Refocus to input
@@ -235,48 +200,35 @@ const TypeBox = () => {
 
     // USE EFFECTS
     useEffect(() => {
-        //moveCaret();
+        typeDispatch({
+            type: "initialize-text",
+            payload: "Bruh complete this.",
+        });
         initializeTypebox();
     }, []);
 
     // Run whenever the y position of the caret changes
     useEffect(() => {
-
-        
-
-        console.log(Math.round(caretPosition[1] / textHeight));
+        //console.log(Math.round(caretPosition[1] / textHeight));
         //console.log(caretPosition[0] + " " + caretPosition[1]);
         setLineCount(Math.round(caretPosition[1] / textHeight));
     }, [caretPosition[1]]);
 
     useEffect(() => {
-
         if (Math.round(caretPosition[1] / textHeight) > lineOffset - 1) {
             scrollText();
         }
-        
     }, [lineCount]);
-
-    useEffect(() => {
-        if (
-            currentCharIndex === targetWords[currentWordIndex].length &&
-            currentWordIndex === targetWords.length - 1
-        ) {
-            setComplete(true);
-        }
-    }, [currentCharIndex, currentWordIndex]);
 
     // Whenever the current character index changes
     useEffect(() => {
         moveCaret();
-        //scrollText();
-    }, [currentCharIndex]);
 
-    // Whenever a character is typed
+    }, [typeState.currentCharIndex]);
+
     useEffect(() => {
-        // console.log(typedWords);
-        // console.log(currentCharIndex);
-    }, [typedWords]);
+        console.log(typeState);
+    }, [typeState]);
 
     return (
         <>
@@ -289,7 +241,7 @@ const TypeBox = () => {
                 >
                     <div className="caret" ref={caretRef}></div>
 
-                    {targetWords.map((word, wordIndex) => {
+                    {typeState.targetWords.map((word, wordIndex) => {
                         let junkText = getJunkText(word, wordIndex);
 
                         return (
