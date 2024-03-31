@@ -45,6 +45,7 @@ const TypeBox = () => {
         if (char === typeState.typedWords[wordIndex][charIndex]) {
             return "char-correct";
         } else {
+            if (typeState.typedWords[wordIndex][charIndex] === undefined) return "char";
             return "char-incorrect";
         }
     };
@@ -173,10 +174,10 @@ const TypeBox = () => {
 
     // USE EFFECTS
     useEffect(() => {
-        typeDispatch({
-            type: "initialize-text",
-            payload: "Bruh complete this.",
-        });
+        // typeDispatch({
+        //     type: "initialize-text",
+        //     payload: "Bruh complete this.",
+        // });
         initializeTypebox();
     }, []);
 
