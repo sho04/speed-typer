@@ -5,7 +5,7 @@ import "./style.scss";
 
 const TypeBox = () => {
     const [targetText, setTargetText] = useState(
-        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.The battle of New Carthage, part of the Second Punic War, took place in early 209 BC when a Roman army under Publius Scipio (bust pictured) assaulted New Carthage, held by a Carthaginian garrison under Mago. Late in 210 BC Scipio took command of Roman forces in Iberia (modern Spain and Portugal) and decided to strike at the regional centre of Carthaginian power: its capital, New Carthage. He marched on the city and immediately attacked it. After defeating a Carthaginian force outside the walls, he pressed attacks on the east gate and the walls. Both were repulsed, but later that day Scipio renewed them. "
+        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair."
     );
 
     // Constants

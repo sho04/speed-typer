@@ -62,7 +62,7 @@ input {
     font-family : base.$font-stack-2;
     font-size : $font-size;
     opacity : 1;
-    color: grey;
+    color: white;
     transition: all 0.2s ease;
 }
 
@@ -70,7 +70,7 @@ input {
     font-family : base.$font-stack-2;
     font-size : $font-size;
     opacity : 1;
-    color : white;
+    color : grey;
     transition: all 0.2s ease;
 }
 
@@ -92,12 +92,11 @@ input {
     position : absolute;
     top : 0;
     left : 0;
-    
-    color : white;
+
     background-color : white;
     mix-blend-mode : difference;
     display : inline-block;
-    width : 2px;
+    width : 1px;
     height : 34px;
     animation : blink 1s infinite;
     transition : all 0.1s ease;
