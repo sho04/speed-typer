@@ -18,6 +18,7 @@ const TypeBox = () => {
     const lines = 5;
     const lineOffset = 3;
 
+    // Will be reduced to dom state eventually
     const [textHeight, setTextHeight] = useState(0);
     const [caretPosition, setCaretPosition] = useState([0, 0]);
     const [lineCount, setLineCount] = useState(0);
