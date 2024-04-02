@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Backend for typing app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sho04/speed-typer.git"
+  },
+  "keywords": [
+    "type",
+    "game"
+  ],
+  "author": "Marcus Phillipswatson, Ashton Becker, Randy Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sho04/speed-typer/issues"
+  },
+  "homepage": "https://github.com/sho04/speed-typer#readme"
+}
