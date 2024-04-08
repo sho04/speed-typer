@@ -1,41 +1,46 @@
 import { Request, Response } from "express";
 
 interface Params {
-    action: string;
-    search: string;
-    limit: string;
-    namespace: string;
-    format: string;
+    action?: string;
+    list?: string;
+    format?: string;
+
+    namespace?: string;
+    rnnamespace?: string;
+    grnnamespace?: string;
+
+    limit?: string;
+    rnlimit?: string;
+    grnlimit?: string;
+
+    search?: string;
+
+    generator?: string;
+    prop?: string;
+    rvprop?: string;
+    grvprop?: string;
 }
 
+interface wikiData {
+    title: string;
+    pageid: number;
+    extract: string;
+}
+
+interface wikiResponse {}
+
 export const getWiki = async (req: Request, res: Response) => {
-    let url = "https://en.wikipedia.org/w/api.php" + "?origin=*";
+    try {
+        const url = "https://en.wikipedia.org/api/rest_v1/page/random/summary";
+        console.log("Get Wiki hit " + url);
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Failed to fetch wiki data");
+        }
+        console.log(response);
 
-    const params: Params = {
-        action: "opensearch",
-        search: "Hampi",
-        limit: "5",
-        namespace: "0",
-        format: "json",
-    };
-
-    for (const [key, value] of Object.entries(params)) {
-        url += "&" + key + "=" + value;
+        return res.status(200).json(await response.json());
+    } catch (error) {
+        console.log("ERROR" + error);
     }
-
-    console.log("Get Wiki hit " + url);
-
-    let data = await fetch(url)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-    console.log("Wiki Data : " + data)
-    res.send(data);
 };
