@@ -27,8 +27,6 @@ interface wikiData {
     extract: string;
 }
 
-interface wikiResponse {}
-
 export const getWiki = async (req: Request, res: Response) => {
     try {
         const url = "https://en.wikipedia.org/api/rest_v1/page/random/summary";
@@ -37,10 +35,19 @@ export const getWiki = async (req: Request, res: Response) => {
         if (!response.ok) {
             throw new Error("Failed to fetch wiki data");
         }
-        console.log(response);
-
-        return res.status(200).json(await response.json());
+        const rawData = await response.json();
+        const cleanedData = cleanWikiData(rawData);
+        console.log(cleanedData);
+        return res.status(200).json(cleanedData);
     } catch (error) {
         console.log("ERROR" + error);
     }
+};
+
+export const cleanWikiData = (data: wikiData): wikiData => {
+    return {
+        title: data.title,
+        pageid: data.pageid,
+        extract: data.extract,
+    };
 };
