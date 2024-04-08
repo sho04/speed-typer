@@ -185,12 +185,14 @@ const TypeBox = () => {
 
     // Run whenever the y position of the caret changes
     useEffect(() => {
+        initializeTypebox();
         //console.log(Math.round(caretPosition[1] / textHeight));
         //console.log(caretPosition[0] + " " + caretPosition[1]);
         setLineCount(Math.round(caretPosition[1] / textHeight));
     }, [caretPosition[1]]);
 
     useEffect(() => {
+        
         if (Math.round(caretPosition[1] / textHeight) > lineOffset - 1) {
             scrollText();
         }

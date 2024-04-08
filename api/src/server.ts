@@ -12,7 +12,10 @@ const app = express(); // New express instance
 const port = 3000; // Port number
 
 // Express configuration
-app.use(cors()); // Enable CORS
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:3000"
+})); // Enable CORS
 app.use(helmet()); // Enable Helmet
 app.use(morgan('dev')); // Enable Morgan
 
