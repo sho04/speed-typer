@@ -6,23 +6,27 @@ $font-size : 28px;
     display : flex;
     align-items : center;
     justify-content : center;
-    background-color : black;
-    border : 1px solid grey;
+    background-color : grey;
+    border : 1px solid white;
+    height : auto;
+    width : 100vw;
 }
 
 .type-box {
-    width : 80%;
-    position : absolute;
-    height : fit-content;
+    width : 50%;
+    position : relative;
+    //height : fit-content;
     background-color : black;
     //border : 1px solid black;
     outline : none;
     display : flex;
-    flex-wrap: wrap;
-    flex-grow : 0;
+    flex-wrap : wrap;
+    flex-direction : row;
+    //overflow-x: wrap;
+    //flex-wrap: wrap;
+   
     overflow-y : scroll;
     align-items : flex-start;
-
     justify-content : flex-start;
 
     
@@ -55,7 +59,10 @@ input {
 .word {
     padding-bottom : 8px;
     padding : 0px;
-    height : fit-content;
+    margin : 0px;
+    align-self : flex-start;
+    justify-self : flex-start;
+    //height : fit-content;
 }
 
 .char {

@@ -9,7 +9,7 @@ import router from './router';
 
 // Create Express server
 const app = express(); // New express instance
-const port = 3000; // Port number
+const port = 3050; // Port number
 
 // Express configuration
 app.use(cors({
@@ -20,7 +20,7 @@ app.use(helmet()); // Enable Helmet
 app.use(morgan('dev')); // Enable Morgan
 
 app.use(express.json()); // Enable JSON parsing
-app.use("/", router()); // Enable auth router
+app.use("/api", router()); // Enable auth router
 
 
 // Start Express server

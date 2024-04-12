@@ -1,7 +1,7 @@
 import {useState, useCallback} from 'react';
 import axios from 'axios';
 
-type Article = {
+export type Article = {
     title: string;
     pageid: number;
     extract: string;
@@ -18,7 +18,7 @@ export const useFetchArticle = () => {
     const fetchArticle = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await axios.get<Article>('https://en.wikipedia.org/api/rest_v1/page/random/summary');
+            const response = await axios.get<Article>('http://localhost:3050/api/wiki/random');
             setArticle(response.data);
         } catch (error) {
             setError("Failed to fetch wiki data");

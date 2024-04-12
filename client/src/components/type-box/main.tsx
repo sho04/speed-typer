@@ -1,10 +1,18 @@
 import react from "react";
 import { useState, useEffect, useRef, useReducer } from "react";
 import { typeReducer, initialState as initialTypeState } from "./reducers/type";
+import { Article } from "../../hooks/useFetchArticle";
 
 import "./style.scss";
 
-const TypeBox = () => {
+type typeBoxProps = {
+    article: Article | null;
+    loading: boolean;
+    error: string | null;
+    fetchArticle: () => Promise<void>;
+};
+
+const TypeBox = (props: typeBoxProps) => {
     // Typebox State
     // This isn't used now but will be eventually so our state is nicer organized.
     // Eventually we can seperate out the type state and the dom state.
@@ -12,10 +20,12 @@ const TypeBox = () => {
         "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair. The Jarrow March (5–31 October 1936) was a protest against the unemployment and poverty suffered in the Tyneside town of Jarrow, in the north-east of England, during the 1930s. Around 200 men marched from Jarrow to London to petition the government to restore industry in the town after the closure in 1934 of Palmer's shipyard. Palmer's had launched more than 1,000 ships since 1852. In the 1920s, mismanagement and changed world trade conditions caused a decline which led to the yard's closure. When plans for its replacement by a steelworks were thwarted, the lack of any large-scale employment in the town led the borough council to organise the march. The House of Commons received the petition but took no action, and the march produced few immediate results. The Jarrovians went home believing that they had failed. In subsequent years the Jarrow March became recognised as a defining event of the 1930s and helped to prepare the way for wide social reform after the Second World War."
     );
 
+    const [loadingText, setLoadingText] = useState("Loading Text...");
+
     const [typeState, typeDispatch] = useReducer(typeReducer, initialTypeState);
 
     // Constants
-    const lines = 5;
+    const lines = 8;
     const lineOffset = 3;
 
     // Will be reduced to dom state eventually
@@ -37,7 +47,7 @@ const TypeBox = () => {
     ) => {
         if (wordIndex > typeState.currentWordIndex) {
             return "char";
-        } else if (wordIndex == typeState.currentWordIndex) {
+        } else if (wordIndex === typeState.currentWordIndex) {
             if (charIndex >= typeState.currentCharIndex) {
                 return "char";
             }
@@ -46,7 +56,8 @@ const TypeBox = () => {
         if (char === typeState.typedWords[wordIndex][charIndex]) {
             return "char-correct";
         } else {
-            if (typeState.typedWords[wordIndex][charIndex] === undefined) return "char";
+            if (typeState.typedWords[wordIndex][charIndex] === undefined)
+                return "char";
             //console.log(char + " " + typeState.typedWords[wordIndex][charIndex])
             return "char-incorrect";
         }
@@ -65,10 +76,10 @@ const TypeBox = () => {
 
     // All key down and type event logic
     const handleKeyDown = (event: react.KeyboardEvent<HTMLInputElement>) => {
-        let code = event.key.charCodeAt(0);
+        //let code = event.key.charCodeAt(0);
         let key = event.key;
 
-        let newTypedWords: string[];
+        //let newTypedWords: string[];
 
         switch (key) {
             case "Backspace":
@@ -122,9 +133,9 @@ const TypeBox = () => {
         let typeboxChar;
         if (typeState.currentWordIndex < typeboxWords.length) {
             typeboxChar =
-            typeboxWords[typeState.currentWordIndex].children[
-                typeState.currentCharIndex
-            ];
+                typeboxWords[typeState.currentWordIndex].children[
+                    typeState.currentCharIndex
+                ];
         } else {
             return;
         }
@@ -144,12 +155,12 @@ const TypeBox = () => {
         setCaretPosition([currentCharRect.left - typeboxRect.left, top]);
     };
 
-    // Initialize variable styles of typebox
+    // Initialize the STYLES of the typebox nothing more
     const initializeTypebox = () => {
         let typebox = typeboxRef.current!;
         let wordRefRect = wordRef.current!.getBoundingClientRect();
 
-        typebox.style.height = wordRefRect.height * lines + "px";
+        typebox.style.maxHeight = wordRefRect.height * lines + "px";
 
         setTextHeight(wordRefRect.height);
     };
@@ -157,15 +168,15 @@ const TypeBox = () => {
     // Scroll the div to the current line.
     const scrollText = () => {
         let typebox = typeboxRef.current!;
-        let caret = caretRef.current!;
 
-        typebox.scrollTop = textHeight * (lineCount - lineOffset + 1);
+        //typebox.scrollTop = textHeight * (lineCount - lineOffset + 1);
+        //typebox.scrollTop = textHeight * (lineCount);
 
-        // typebox.scrollTo({
-        //     top: textHeight * (lineCount - lineOffset + 1),
-        //     behavior: "smooth",
-        // });
-
+        typebox.scroll({
+            top: textHeight * lineCount,
+            left: 0,
+            behavior: "smooth",
+        });
     };
 
     // Refocus to input
@@ -174,26 +185,45 @@ const TypeBox = () => {
         input.focus();
     };
 
+    //
+
     // USE EFFECTS
     useEffect(() => {
-        // typeDispatch({
-        //     type: "initialize-text",
-        //     payload: "Bruh complete this.",
-        // });
+        props.fetchArticle();
         initializeTypebox();
     }, []);
 
+    useEffect(() => {
+        if (props.loading) {
+            typeDispatch({
+                type: "reset",
+            });
+            typeDispatch({
+                type: "initialize-text",
+                payload: loadingText,
+            });
+        }
+
+        if (props.article) {
+            typeDispatch({
+                type: "reset",
+            });
+            typeDispatch({
+                type: "initialize-text",
+                payload: props.article.extract,
+            });
+        }
+    }, [props.loading, props.article, loadingText])
+
     // Run whenever the y position of the caret changes
     useEffect(() => {
-        initializeTypebox();
         //console.log(Math.round(caretPosition[1] / textHeight));
         //console.log(caretPosition[0] + " " + caretPosition[1]);
         setLineCount(Math.round(caretPosition[1] / textHeight));
     }, [caretPosition[1]]);
 
     useEffect(() => {
-        
-        if (Math.round(caretPosition[1] / textHeight) > lineOffset - 1) {
+        if (Math.round(caretPosition[1] / textHeight) > lines - 1) {
             scrollText();
         }
     }, [lineCount]);
@@ -201,10 +231,10 @@ const TypeBox = () => {
     // Whenever the current character index changes
     useEffect(() => {
         moveCaret();
-
     }, [typeState.currentCharIndex]);
 
     useEffect(() => {
+        // debug print
         console.log(typeState);
     }, [typeState]);
 

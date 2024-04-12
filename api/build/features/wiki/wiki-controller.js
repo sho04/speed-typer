@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWiki = void 0;
+exports.cleanWikiData = exports.getWiki = void 0;
 const getWiki = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const url = "https://en.wikipedia.org/api/rest_v1/page/random/summary";
@@ -18,11 +18,21 @@ const getWiki = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!response.ok) {
             throw new Error("Failed to fetch wiki data");
         }
-        console.log(response);
-        return res.status(200).json(yield response.json());
+        const rawData = yield response.json();
+        const cleanedData = (0, exports.cleanWikiData)(rawData);
+        console.log(cleanedData);
+        return res.status(200).json(cleanedData);
     }
     catch (error) {
         console.log("ERROR" + error);
     }
 });
 exports.getWiki = getWiki;
+const cleanWikiData = (data) => {
+    return {
+        title: data.title,
+        pageid: data.pageid,
+        extract: data.extract,
+    };
+};
+exports.cleanWikiData = cleanWikiData;
