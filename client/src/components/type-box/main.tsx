@@ -10,6 +10,7 @@ type typeBoxProps = {
     loading: boolean;
     error: string | null;
     fetchArticle: () => Promise<void>;
+    setGameState: (state: "loading" | "playing" | "finished") => void;
 };
 
 const TypeBox = (props: typeBoxProps) => {
@@ -193,6 +194,8 @@ const TypeBox = (props: typeBoxProps) => {
         initializeTypebox();
     }, []);
 
+    // Run whenever the props.article, props.loading, or loadingText changes
+    // This is used to update the load state of the typebox (api call)
     useEffect(() => {
         if (props.loading) {
             typeDispatch({
@@ -202,16 +205,17 @@ const TypeBox = (props: typeBoxProps) => {
                 type: "initialize-text",
                 payload: loadingText,
             });
-        }
-
-        if (props.article) {
+            typeboxRef.current!.style.opacity = "0.5";
+            //console.log("loading")
+        } else if (props.article) {
             typeDispatch({
                 type: "reset",
             });
             typeDispatch({
                 type: "initialize-text",
-                payload: props.article.extract,
+                payload: props.article?.extract,
             });
+            typeboxRef.current!.style.opacity = "1";
         }
     }, [props.loading, props.article, loadingText])
 
@@ -238,10 +242,23 @@ const TypeBox = (props: typeBoxProps) => {
         console.log(typeState);
     }, [typeState]);
 
+    useEffect(() => {
+        if (typeState.complete) {
+            props.setGameState("finished");
+            props.fetchArticle();
+        }
+    }, [typeState.complete]);
+
     return (
         <>
             <input onKeyDown={handleKeyDown} ref={inputRef}></input>
             <div className="type-box-container">
+
+            <div className="type-box-header">
+                <span className="type-box-header-span">{props.article?.title}</span>
+                <span className="type-box-header-span">{typeState.currentWordIndex} / {typeState.targetWords.length}</span>
+            </div>
+
                 <div
                     className="type-box"
                     ref={typeboxRef}

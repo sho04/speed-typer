@@ -1,15 +1,33 @@
 @use "../../base.scss";
 
-$font-size : 28px;
+$font-size : 1.8rem;
 
 .type-box-container {
     display : flex;
+    flex-direction : column;
     align-items : center;
     justify-content : center;
-    background-color : grey;
-    border : 1px solid white;
+    background-color : black;
+    border : 1px hidden white;
     height : auto;
     width : 100vw;
+}
+
+.type-box-header {
+    
+    margin : 0 0px 16px 0px;
+    padding : 0;
+    width : 50%;
+    display : flex;
+    flex-direction : row;
+    background-color : grey;
+    justify-content : space-around;
+
+    .type-box-header-span {
+        font-family : base.$font-stack-2;
+        font-size : 1.5rem;
+        color : white;
+    }
 }
 
 .type-box {

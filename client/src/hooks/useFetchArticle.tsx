@@ -19,11 +19,18 @@ export const useFetchArticle = () => {
         setLoading(true);
         try {
             const response = await axios.get<Article>('http://localhost:3050/api/wiki/random');
-            setArticle(response.data);
+
+            setTimeout(() => {
+                console.log('Fetched article');
+                setArticle(response.data);
+                setLoading(false);
+            }, 250);
+           
         } catch (error) {
             setError("Failed to fetch wiki data");
         } finally {
-            setLoading(false);
+            
+            //setLoading(false);
         }
     }, []);
 
