@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useReducer } from "react";
 import { typeReducer, initialState as initialTypeState } from "./reducers/type";
 import { Article } from "../../hooks/useFetchArticle";
 
+
 import "./style.scss";
 
 type typeBoxProps = {
@@ -11,6 +12,7 @@ type typeBoxProps = {
     error: string | null;
     fetchArticle: () => Promise<void>;
     setGameState: (state: "loading" | "playing" | "finished") => void;
+    addPoints: (accuracy: number, wordCount: number) => void;
 };
 
 const TypeBox = (props: typeBoxProps) => {
@@ -245,6 +247,10 @@ const TypeBox = (props: typeBoxProps) => {
     useEffect(() => {
         if (typeState.complete) {
             props.setGameState("finished");
+
+            let accuracy = typeState.correctChars / typeState.targetText.length;
+            props.addPoints(accuracy, typeState.targetWords.length);
+
             props.fetchArticle();
         }
     }, [typeState.complete]);

@@ -4,6 +4,7 @@ type State = {
     typedWords: Array<string>;
     currentWordIndex: number;
     currentCharIndex: number;
+    correctChars: number;
     mode: "default" | "book";
     complete: boolean;
     passed: boolean;
@@ -17,6 +18,7 @@ export const initialState: State = {
     targetWords: defaultText.split(" "),
     currentWordIndex: 0,
     currentCharIndex: 0,
+    correctChars: 0,
     typedWords: [""],
     mode: "default",
     complete: false,
@@ -83,6 +85,11 @@ export const typeReducer = (state: State, action: Action): State => {
                 }
             });
 
+            let newCorrectChars = state.correctChars;
+            if (action.payload === state.targetWords[state.currentWordIndex][state.currentCharIndex]) {
+                newCorrectChars++;
+            }
+
             let complete = false;
             let passed = false;
 
@@ -100,6 +107,7 @@ export const typeReducer = (state: State, action: Action): State => {
                 typedWords: newTypedWords,
                 currentCharIndex: newCharIndex,
                 complete: complete,
+                correctChars: newCorrectChars,
             };
         }
 
