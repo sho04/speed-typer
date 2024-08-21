@@ -11,7 +11,7 @@ const PointDisplay = (props : PointDisplayProps) => {
 
     return (
         <div className="point-display">
-            <div className="points">Points: {props.points}</div>
+            <div className="points">${props.points}</div>
         </div>
     );
 }

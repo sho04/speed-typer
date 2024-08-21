@@ -42,7 +42,7 @@ const TypeBox = (props: typeBoxProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const wordRef = useRef<HTMLSpanElement>(null);
 
-    // Get character calss from the current word and character index.
+    // Get character class from the current word and character index.
     const getCharClass = (
         char: string,
         charIndex: number,
@@ -260,10 +260,10 @@ const TypeBox = (props: typeBoxProps) => {
             <input onKeyDown={handleKeyDown} ref={inputRef}></input>
             <div className="type-box-container">
 
-            <div className="type-box-header">
+            {/* <div className="type-box-header">
                 <span className="type-box-header-span">{props.article?.title}</span>
                 <span className="type-box-header-span">{typeState.currentWordIndex} / {typeState.targetWords.length}</span>
-            </div>
+            </div> */}
 
                 <div
                     className="type-box"

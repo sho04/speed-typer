@@ -1,15 +1,16 @@
 .point-display {
-    width : 100%;
+    // width : 100%;
     display : flex;
-    flex-direction : column;
-    justify-content : center;
-    align-items : center;
     transition : 0.3s;
+   
+}
 
-    .points {
-        font-size : 2rem;
-        color : white;
-        opacity : 1;
-        transition : 0.3s;
-    }
+.points {
+    font-size : 1.5rem;
+    color : white;
+    opacity : 1;
+    transition : 0.3s;
+    text-align: center;
+    margin: 8px;
+    //border : 1px solid white;
 }
